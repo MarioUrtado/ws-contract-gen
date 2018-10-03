@@ -1,0 +1,105 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema elementFormDefault="qualified" nxsd:encoding="UTF-8" nxsd:version="JSON" targetNamespace="http://www.entel.cl/ESO/MessageHeader/JSON/v1" xmlns="http://www.entel.cl/ESO/MessageHeader/JSON/v1" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="RequestHeader">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Consumer"/>
+        <xs:element ref="Trace"/>
+        <xs:element ref="Channel"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResponseHeader">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Consumer"/>
+        <xs:element ref="Trace"/>
+        <xs:element ref="Channel"/>
+        <xs:element ref="Result"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Result">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="status" type="xs:string"/>
+        <xs:element name="description" type="xs:string"/>
+        <xs:element name="CanonicalError">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="code" type="xs:string"/>
+              <xs:element name="description" type="xs:string"/>
+              <xs:element name="type" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="SourceError"/>
+        <xs:element name="CorrelativeErrors">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" ref="SourceError"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Consumer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sysCode" type="xs:string"/>
+        <xs:element name="enterpriseCode" type="xs:string"/>
+        <xs:element name="countryCode" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Trace">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="clientReqTimestamp" type="xs:string"/>
+        <xs:element name="reqTimestamp" type="xs:string"/>
+        <xs:element name="rspTimestamp" type="xs:string"/>
+        <xs:element name="processID" type="xs:string"/>
+        <xs:element name="eventID" type="xs:string"/>
+        <xs:element name="sourceID" type="xs:string"/>
+        <xs:element name="correlationEventID" type="xs:string"/>
+        <xs:element name="conversationID" type="xs:string"/>
+        <xs:element name="correlationID" type="xs:string"/>
+        <xs:element name="Service">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="code" type="xs:string"/>
+              <xs:element name="name" type="xs:string"/>
+              <xs:element name="operation" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Channel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string"/>
+        <xs:element name="mode" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SourceError">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="code" type="xs:string"/>
+        <xs:element name="description" type="xs:string"/>
+        <xs:element name="ErrorSourceDetails">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="source" type="xs:string"/>
+              <xs:element name="details" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SourceFault" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

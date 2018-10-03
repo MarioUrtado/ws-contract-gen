@@ -1,0 +1,50 @@
+buildscript {
+    ext {
+        springBootVersion     = "2.0.5.RELEASE"
+        gradleDockerVersion   = "1.2"
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+ext {
+    artifactId = "entity-governance"
+    versionId= "0.1.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+bootJar {
+    baseName = artifactId
+    version =  versionId
+    mainClassName = 'cl.entel.soa.gov.App'
+}
+
+task copyAppJar(type: Copy) {
+    from file("build/libs/${artifactId}-${versionId}.jar")
+    into file(".")
+    rename "${artifactId}-${versionId}.jar", "app.jar"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter"
+    compile "org.freemarker:freemarker:2.3.23"
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.apache.poi:poi-ooxml:3.15'
+    compile "org.apache.xmlbeans:xmlbeans:2.6.0"
+}
