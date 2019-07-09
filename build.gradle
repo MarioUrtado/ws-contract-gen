@@ -1,13 +1,9 @@
 buildscript {
-    ext {
-        springBootVersion     = "2.0.5.RELEASE"
-        gradleDockerVersion   = "1.2"
-    }
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
     }
 }
 repositories {
@@ -42,7 +38,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter"
+    compile("org.springframework.boot:spring-boot-starter-web")
     compile "org.freemarker:freemarker:2.3.23"
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.poi:poi-ooxml:3.15'
