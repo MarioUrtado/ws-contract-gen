@@ -1,20 +1,26 @@
 package cl.entel.tde.codegen.contract.xsd;
 
 import cl.entel.tde.codegen.context.Context;
-import cl.entel.tde.dtm.util.NodeTree;
-import cl.entel.tde.dtm.util.NodeTreeToXML;
-import cl.entel.tde.codegen.context.Service;
-import cl.entel.tde.dtm.ws.xsd.cardinality.Cardinality;
+import cl.entel.tde.codegen.mustache.MustacheExecutor;
+import cl.entel.tde.codegen.util.NodeTree;
+import cl.entel.tde.codegen.util.NodeTreeType;
+import cl.entel.tde.codegen.xsd.cardinality.Cardinality;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Map;
 
 @Component
 public class FactoryNXSD extends FactoryXSD {
+
+    @Autowired
+    private MustacheExecutor mustacheExecutor;
+
+    public FactoryNXSD() {
+    }
 
     public Document getInstance(Map<String, NodeTree> nodes, Context context){
         Document doc = null;
@@ -28,9 +34,9 @@ public class FactoryNXSD extends FactoryXSD {
             rootElement.setAttribute("xmlns:nxsd", "http://xmlns.oracle.com/pcbpel/nxsd");
             rootElement.setAttribute("nxsd:version", "JSON");
             rootElement.setAttribute("nxsd:encoding", "UTF-8");
-            rootElement.setAttribute("xmlns:" + Prefix.XSD_SELF_NAMESPACE, Namespace.XSD_EBM_NAMESPACE(context));
+            rootElement.setAttribute("xmlns:" + Prefix.XSD_SELF_NAMESPACE, mustacheExecutor.build(context.getConfiguration().getNamespaces().get("service-namespace-ebm").getValue(), context));
             rootElement.setAttribute("xmlns:" + Prefix.XSD_ESO_MESSAGEHEADER, Namespace.XSD_ESO_MESSAGEHEADER_JSON);
-            rootElement.setAttribute("targetNamespace", Namespace.XSD_EBM_NAMESPACE(context));
+            rootElement.setAttribute("targetNamespace", mustacheExecutor.build(context.getConfiguration().getNamespaces().get("service-namespace-ebm").getValue(), context));
             rootElement.setAttribute("elementFormDefault", "qualified");
             rootElement.setAttribute("version", "1.0");
             doc.appendChild(rootElement);
@@ -44,8 +50,8 @@ public class FactoryNXSD extends FactoryXSD {
             Element complexType = createComplexType(doc, servicerRequestElement+"_Type");
             Element headerReq = createEntityRef(doc, Prefix.XSD_ESO_MESSAGEHEADER, "RequestHeader", new Cardinality(1,1));
             ((Element) complexType.getFirstChild()).appendChild(headerReq);
-            NodeTreeToXML xml = new NodeTreeToXML();
-            xml.transform(doc, (Element) complexType.getFirstChild(), tree);
+
+            this.transform(doc, (Element) complexType.getFirstChild(), tree);
 
             rootElement.appendChild(servREQ);
             rootElement.appendChild(complexType);
@@ -57,8 +63,7 @@ public class FactoryNXSD extends FactoryXSD {
             complexType = createComplexType(doc, servicerResponseElement+"_Type");
             headerReq = createEntityRef(doc, Prefix.XSD_ESO_MESSAGEHEADER, "ResponseHeader", new Cardinality(1,1));
             ((Element) complexType.getFirstChild()).appendChild(headerReq);
-            xml = new NodeTreeToXML();
-            xml.transform(doc, (Element) complexType.getFirstChild(), tree);
+            this.transform(doc, (Element) complexType.getFirstChild(), tree);
             rootElement.appendChild(servRSP);
             rootElement.appendChild(complexType);
 
@@ -67,13 +72,13 @@ public class FactoryNXSD extends FactoryXSD {
             complexType = createComplexType(doc, servicerFResponseElement+"_Type");
             headerReq = createEntityRef(doc, Prefix.XSD_ESO_MESSAGEHEADER, "ResponseHeader", new Cardinality(1,1));
             ((Element) complexType.getFirstChild()).appendChild(headerReq);
-            xml = new NodeTreeToXML();
-            xml.transform(doc, (Element) complexType.getFirstChild(), nodes.get("FRSP"));
+
+            this.transform(doc, (Element) complexType.getFirstChild(), nodes.get("FRSP"));
             rootElement.appendChild(servRFSP);
             rootElement.appendChild(complexType);
             rootElement.appendChild(createDefaultFault(doc,servicerFResponseElement ));
         }catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return doc;
     }
@@ -107,4 +112,36 @@ public class FactoryNXSD extends FactoryXSD {
         fault.appendChild(mainComplexType);
         return fault;
     }
+
+
+    //-------------------
+    public Element transform(Document doc, Element rootElement, NodeTree tree){
+        try {
+            Element complex = this.createEntity(doc,tree.getName(),tree.getCardinality());
+            rootElement.appendChild(complex);
+            this.recursiveBody(doc, this.getSequence(complex), tree);
+            //recursiveBody(doc, rootElement, tree );
+            //doc.appendChild(rootElement);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return rootElement;
+    }
+
+    public void recursiveBody(Document doc, Element element, NodeTree tree){
+        for (NodeTree node: tree.getChilds()) {
+            if (node.getNodeType() == NodeTreeType.SIMPLE){
+                Element fieldElement = this.createField(doc, Prefix.XSD_NAMESPACE, node.getName(),node.getType(), node.getCardinality());
+                element.appendChild(fieldElement);
+            }
+        }
+        for (NodeTree node: tree.getChilds()) {
+            if (node.getNodeType() == NodeTreeType.COMPLEX){
+                Element complex = this.createEntity(doc,node.getName(),node.getCardinality());
+                element.appendChild(complex);
+                this.recursiveBody(doc, this.getSequence(complex), node);
+            }
+        }
+    }
+
 }

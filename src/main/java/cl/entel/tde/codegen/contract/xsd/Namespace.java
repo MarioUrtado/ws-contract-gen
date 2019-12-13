@@ -21,21 +21,11 @@ public class Namespace {
 
     public static String XSD_ESO_MESSAGEHEADER_JSON = "http://www.entel.cl/ESO/MessageHeader/JSON/v1";
 
-    private static String XSD_EBM_NAMESPACE_TEMPLATE = "http://www.entel.cl/EBM/SERVICE_NAME/vSERVICE_VERSION";
-
-    private static String WSDL_ESC_NAMESPACE_TEMPLATE = "http://www.entel.cl/ESC/SERVICE_NAME/vSERVICE_VERSION";
-
     public static String WADL_SOA_REST = "http://www.oracle.com/soa/rest";
 
     public static String WADL_APPLICATION= "http://wadl.dev.java.net/2009/02";
 
-    public static String XSD_EBM_NAMESPACE(Context context){
-        return Namespace.XSD_EBM_NAMESPACE_TEMPLATE.replace("SERVICE_NAME", context.getService().getName()).replace("SERVICE_VERSION", context.getService().getVersion());
-    }
 
-    public static String WSDL_ESC_NAMESPACE(Context context){
-        return Namespace.WSDL_ESC_NAMESPACE_TEMPLATE.replace("SERVICE_NAME", context.getService().getName()).replace("SERVICE_VERSION", context.getService().getVersion());
-    }
 
 
 

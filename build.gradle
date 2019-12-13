@@ -38,9 +38,11 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile "org.freemarker:freemarker:2.3.23"
+    compile("org.springframework.boot:spring-boot-starter")
+    //compile "org.freemarker:freemarker:2.3.23"
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.poi:poi-ooxml:3.15'
     compile "org.apache.xmlbeans:xmlbeans:2.6.0"
+    compile ("com.fasterxml.jackson.core:jackson-databind:2.9.8")
+    compile ("com.github.spullara.mustache.java:compiler:0.9.5")
 }

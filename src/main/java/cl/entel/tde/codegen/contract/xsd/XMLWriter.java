@@ -11,10 +11,11 @@ import java.io.File;
 
 public class XMLWriter {
 
-    public void write(Document document, String targetFilePath) throws TransformerConfigurationException, TransformerException {
+    public void write(Document document, String targetFilePath, String targetFile) throws TransformerConfigurationException, TransformerException {
+        new File(targetFilePath).mkdirs();
         Transformer transformer = TransformerFactory.getInsetance();
         DOMSource source = new DOMSource(document);
-        StreamResult result = new StreamResult(new File(targetFilePath));
+        StreamResult result = new StreamResult(new File(targetFilePath + File.separatorChar + targetFile));
         transformer.transform(source, result);
     }
 
