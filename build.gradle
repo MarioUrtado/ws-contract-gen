@@ -12,7 +12,7 @@ repositories {
 }
 
 ext {
-    artifactId = "entity-governance"
+    artifactId = "ws-contract-gen"
     versionId= "0.1.0"
 }
 
@@ -25,13 +25,7 @@ apply plugin: 'io.spring.dependency-management'
 bootJar {
     baseName = artifactId
     version =  versionId
-    mainClassName = 'cl.entel.soa.gov.App'
-}
-
-task copyAppJar(type: Copy) {
-    from file("build/libs/${artifactId}-${versionId}.jar")
-    into file(".")
-    rename "${artifactId}-${versionId}.jar", "app.jar"
+    mainClassName = 'cl.entel.tde.dtm.App'
 }
 
 sourceCompatibility = 1.8
@@ -39,10 +33,8 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter")
-    //compile "org.freemarker:freemarker:2.3.23"
-    compile 'commons-io:commons-io:2.5'
     compile 'org.apache.poi:poi-ooxml:3.15'
+    compile "org.freemarker:freemarker:2.3.23"
+    compile 'commons-io:commons-io:2.5'
     compile "org.apache.xmlbeans:xmlbeans:2.6.0"
-    compile ("com.fasterxml.jackson.core:jackson-databind:2.9.8")
-    compile ("com.github.spullara.mustache.java:compiler:0.9.5")
 }
